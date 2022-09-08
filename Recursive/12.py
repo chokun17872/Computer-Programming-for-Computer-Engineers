@@ -14,7 +14,3 @@ def integral(f,a,b):
   if b == 999*d:
     return f(a+b/2)*d
   return f(a+b/2)*d + integral(f,a,b+2*d)
-
-fn = lambda x:2*x**2
-
-print(integral(fn,2,4))

@@ -12,6 +12,3 @@ def divnums(n, d):
         return f"{divnums(n-1,d)}{str(n)} "
     else:
         return f"{divnums(n-1,d)}"
-
-print(divnums(10,3))
-print(len(divnums(10,3)))

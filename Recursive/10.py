@@ -14,5 +14,3 @@ def newton_cuberoot(x,y):
 
 def cuberoot(y):
   return newton_cuberoot(1.0, y)
-
-print(cuberoot(7514))
