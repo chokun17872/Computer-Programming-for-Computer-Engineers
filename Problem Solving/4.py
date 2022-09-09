@@ -18,7 +18,7 @@ def r_input():
     return board,m,n,M,N,size,color
 
 def solve(board,m,n,M,N,size,color):
-    if M < 1 or M > m or N < 1 or N > n: return board
+    if size == 0: return board
     st_x = M-size if M-size >= 1 else 1
     en_x = M+size if M+size <= m else m
     st_y = N-size if N-size >= 1 else 1

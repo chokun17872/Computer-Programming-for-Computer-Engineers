@@ -5,26 +5,17 @@ Student Code: 6510503310
 Branch: Computer Engineering
 """
 
-## not finished yet ##
-
 def r_input():
     txt = input()
     return txt
 
 def solve(txt):
+    txt = txt.split(",")
     new_txt = ""
-    word = ""
     for i in range(len(txt)):
-        if txt[i] == "," and i == len(txt)-1:
-            new_txt += "\"" + word.strip() + "\"," + "\"" + "" + "\""
-        elif txt[i] == ",":
-            new_txt += "\"" + word.strip() + "\","
-            word = ""
-        elif i == len(txt)-1:
-            word += txt[i]
-            new_txt += "\"" + word.strip() + "\""
-        else:
-            word += txt[i]
+        new_txt += f"\"{txt[i].strip()}\""
+        if i != len(txt)-1:
+            new_txt += ","
     return new_txt
 
 ## main ##
