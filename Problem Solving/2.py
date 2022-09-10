@@ -10,16 +10,16 @@ def r_input():
   return string
 
 def solve(string):
-  is_up = string[0].isupper()
+  is_up = True
   new_string = ""
   for i in range(len(string)):
-    if i == 0 or string[i] == " ":
+    if string[i] == " ":
       new_string += string[i]
     else:
       if is_up == True:
-        new_string += string[i].lower()
-      else:
         new_string += string[i].upper()
+      else:
+        new_string += string[i].lower()
       is_up = not is_up
   return new_string
   
