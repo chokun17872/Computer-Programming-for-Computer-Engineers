@@ -5,27 +5,24 @@ Student Code: 6510503310
 Branch: Computer Engineering
 """
 
-## not finished yet ##
-
 def r_input():
     n = int(input())
     histo = []
     for i in range(n):
         histo.append(int(input()))
-    return n,histo
+    return histo
 
-def solve(n,histo):
-    area = []
-    for i in range(n):
-        length = 0
-        for j in range(i,n):
-            if histo[j] >= histo[i]:
-                length += 1
-            else: break
-        area.append(histo[i] * length)
-    return sorted(area)[-1]
+def solve(histo):
+    area_lst = []
+    for i in range(len(histo)):
+        for j in range(i,len(histo)):
+            height = min(histo[i:j+1])
+            length = j-i+1
+            area = height * length
+            area_lst.append(area)
+    return max(area_lst)
 
 ## main ##
 
-n,histo = r_input()
-print(solve(n,histo))
+histo = r_input()
+print(solve(histo))

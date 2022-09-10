@@ -18,17 +18,17 @@ def r_input():
     return board,m,n,M,N,size,color
 
 def solve(board,m,n,M,N,size,color):
-    if size == 0: return board
+    # if size == 0 or N < 1 or N > n or M < 1 or M > m: return board
     st_x = M-size if M-size >= 1 else 1
     en_x = M+size if M+size <= m else m
     st_y = N-size if N-size >= 1 else 1
     en_y = N+size if N+size <= n else n
-    old_color = board[N-1][M-1]
+    target = board[N-1][M-1]
     new_board = []
     for i in range(1,n+1):
         row = []
         for j in range(1,m+1):
-            if i >= st_y and i <= en_y and j >= st_x and j <= en_x and board[i-1][j-1] == old_color:
+            if i >= st_y and i <= en_y and j >= st_x and j <= en_x and board[i-1][j-1] == target:
                 row.append(color)
             else:
                 row.append(board[i-1][j-1])
