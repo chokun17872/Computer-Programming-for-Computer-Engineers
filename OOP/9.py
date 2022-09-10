@@ -5,8 +5,6 @@ Student Code: 6510503310
 Branch: Computer Engineering
 """
 
-## not finished yet ## 
-
 import numpy as np
 from math import floor
 X = np.random.RandomState(1)
@@ -17,89 +15,110 @@ class Character:
         self.spd = spd
 
 class Hero(Character):
+    def __init__(self,hp,spd,kill=0):
+        self.kill = kill
+        super(Hero, self).__init__(hp, spd)
+
+    def attack(self,other,streak):
+        other.hp -= (10 + streak*2)
+        if other.hp < 0:
+            other.hp = 0
+            self.kill += 1
+
     def heal(self,n):
         self.hp += 20*n
-    
-    def attack(self,monster,streak):
-        if monster.hp < 10+(streak*2):
-            monster.hp = 0
-        else:
-            monster.hp -= 10+(streak*2)
 
 class Monster(Character):
-    def __init__(self,id):
+    def __init__(self,hp,spd,id):
         self.id = id
+        super(Monster, self).__init__(hp, spd)
 
     def attack(self,hero):
-        damage = X.randint(1, 40)
-        if hero.hp < damage:
+        hero.hp -= X.randint(1, 40)
+        if hero.hp < 0:
             hero.hp = 0
-        else:
-            hero.hp -= damage
 
 def r_input():
-    start_hp = int(input("Blood Start: "))
-    speed = int(input("Your speed: "))
-    hero = Hero(start_hp,speed)
+    s_hp = int(input("Blood Start: "))
+    spd = int(input("Your speed: "))
     n = int(input("Number of monsters: "))
-    monsters = []
+    m_spd = []
     for i in range(n):
-        speed = int(input(f"Monster {i+1} speed: "))
-        monster = Monster(floor(start_hp/n), speed, i+1)
-        monsters.append(monster)
-    return hero,monsters,n
+        m_spd.append(int(input(f"Monster {i+1} speed: ")))
+    return s_hp,spd,n,m_spd
 
-def gen_characters_turn(hero,monsters):
-    characters = [[monster.speed,monster] for monster in monsters] + [hero.speed,hero]
-    characters.sort(key=lambda x:x[0])
+def gen_character(s_hp,spd,n,m_spd):
+    hero = [Hero(s_hp,spd)]
+    monsters = [Monster(floor(s_hp/n), m_spd[i], i+1) for i in range(len(m_spd))]
+    characters = hero + monsters
+    characters.sort(key=lambda x:x.spd, reverse=True)
     return characters
 
-def dead(monsters,monsters_speed,idx):
-    monsters.pop(idx)
-    monsters_speed.pop(idx)
-    return monsters,monsters_speed
-
-def hero_action(hero,characters,streak,n):
+def hero_action(hero,monster,n,streak):
     print("- Your Turn -")
     action = input("Attack(a) or Heal(h): ")
-    monsters = [character[0] for character in characters if issubclass(character, Monster)]
     if action == "a":
-        hero.attack(monsters[0],streak)
-        streak += 1
-        print(f"Monster {monsters[0].id} HP left {monsters[0].hp}")
-    if monsters[0].hp == 0:   # hero kills monster
-        characters.pop(0)
+        hero.attack(monster,streak)
+        print(f"Monster {monster.id} HP left {monster.hp}")
+        return hero,monster,streak+1
     elif action == "h":
         hero.heal(n)
         print(f"Your HP left {hero.hp}")
-        streak = 0
+        return hero,monster,0
 
-# def monster_action():
-#     for monster in monsters:
-#         print(f"- Monster {1} Turn -")
+def monster_action(hero,monster):
+    print(f"- Monster {monster.id} Turn -")
+    monster.attack(hero)
+    print(f"Your HP left {hero.hp}")
+    return hero,monster
 
+def find_char_idx(characters,option):
+    if option == "h":
+        for character in characters:
+            if isinstance(character, Hero):
+                return characters.index(character)
+    elif option == "m":
+        for character in characters:
+            if character.hp != 0 and isinstance(character, Monster):
+                return characters.index(character)
 
-def play(hero,monsters,n):
-    characters = gen_characters_turn(hero,monsters)
-    streak = 1
+def play(characters,n):
+    turn = 0
+    idx = 0
+    streak = 0
+
     while True:
-        for i in range(len(characters)):
-            if issubclass(characters[i], Hero):
-                hero,characters = hero_action(hero,characters,streak,n)
-            elif issubclass(characters[i], Monster):
-                # monster_action()
-            if len(characters) == 1:
+        first_attacker_idx = min(find_char_idx(characters,"h"), find_char_idx(characters,"m"))
+        if idx % (n+1) == first_attacker_idx:
+            turn += 1
+            print("=========================")
+            print(f"Turn {turn}")
+            print("-------------------------")
+
+        attacker = characters[idx%(n+1)]
+
+        if isinstance(attacker, Hero):
+            monster_idx = find_char_idx(characters,"m")
+            hero = attacker
+            monster = characters[monster_idx]
+            characters[idx%(n+1)], characters[monster_idx], streak = hero_action(hero,monster,n,streak)
+            if characters[idx%(n+1)].kill == n:
                 print("You win.(^_^)")
                 break
-            elif hero.hp == 0
+
+        elif isinstance(attacker, Monster) and attacker.hp != 0:
+            hero_idx = find_char_idx(characters,"h")
+            hero = characters[hero_idx]
+            monster = attacker
+            characters[hero_idx], characters[idx%(n+1)] = monster_action(hero,monster)
+            if characters[hero_idx].hp == 0:
                 print("You lose and die.(T_T)")
                 break
-        
-## main ##
 
-hero,monsters,n = r_input()
-turn = 1
-print("=========================")
-print(f"Turn {turn}")
-print("-------------------------")
-play(hero,monsters,n)
+        idx += 1
+
+# main ##
+
+s_hp,spd,n,m_spd = r_input()
+characters = gen_character(s_hp,spd,n,m_spd)
+play(characters,n)
