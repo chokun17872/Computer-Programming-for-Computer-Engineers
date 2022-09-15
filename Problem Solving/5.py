@@ -5,25 +5,21 @@ Student Code: 6510503310
 Branch: Computer Engineering
 """
 
-## not finished yet ##
-
 def r_input():
     m,n = map(int, input().split("*"))
     board = []
     for i in range(n):
-        row = input()
-        board.append(row)
-    brush = input().split()
-    M,N,size,color = [int(brush[i]) if i < 3 else brush[i] for i in range(len(brush))]
-    return board,m,n,M,N,size,color
+        board.append(input())
+    brush = input().split(" ")
+    x,y,size,color = [int(brush[i]) if i < 3 else brush[i] for i in range(4)]
+    return board,m,n,x,y,size,color
 
-def solve(board,m,n,M,N,size,color):
-    # if size == 0 or N < 1 or N > n or M < 1 or M > m: return board
-    st_x = M-size if M-size >= 1 else 1
-    en_x = M+size if M+size <= m else m
-    st_y = N-size if N-size >= 1 else 1
-    en_y = N+size if N+size <= n else n
-    target = board[N-1][M-1]
+def solve(board,m,n,x,y,size,color):
+    st_x = x-size if x-size >= 1 else 1
+    en_x = x+size if x+size <= m else m
+    st_y = y-size if y-size >= 1 else 1
+    en_y = y+size if y+size <= n else n
+    target = board[y-1][x-1]
     new_board = []
     for i in range(1,n+1):
         row = []
@@ -43,6 +39,6 @@ def print_board(board,m,n):
 
 ## main ##
 
-board,m,n,M,N,size,color = r_input()
-new_board = solve(board,m,n,M,N,size,color)
+board,m,n,x,y,size,color = r_input()
+new_board = solve(board,m,n,x,y,size,color)
 print_board(new_board,m,n)
