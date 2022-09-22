@@ -25,5 +25,5 @@ def solve(cow_weight,question):
 
 ## main ##
 
-n,cow_weight,question = r_input()
+cow_weight,question = r_input()
 print(solve(cow_weight,question))
